@@ -12,6 +12,7 @@
 <body>
 {% for element in movies.results %}
 {{element.original_title}}
+
     <p>
       <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{loop.index}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{loop.index}}">Overview</a>
       <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapse{{loop.index}}" aria-expanded="false" aria-controls="multiCollapse{{loop.index}}">Release</button>
@@ -33,6 +34,8 @@
           </div>
         </div>
       </div>
+<!--        {{link+element.poster_path}}-->
+        <img src="{{'https://image.tmdb.org/t/p/w400'+element.poster_path}}">
     </div>
 {%endfor%}
 </body>
