@@ -4,7 +4,7 @@
 {% block content %}
 
 {% for element in movies.results %}
-{{element.original_title}}
+<p style="font-size:48px;"> <strong>{{element.original_title}}</strong> </p>
 
     <p>
       <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{loop.index}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{loop.index}}">Overview</a>
@@ -28,8 +28,7 @@
           </div>
         </div>
       </div>
-<!--        {{link+element.poster_path}}-->
-<!--        <img style="float: left;" src="{{'https://image.tmdb.org/t/p/w400'+element.poster_path}}"  >-->
+
     </div>
 {%endfor%}
 </body>
