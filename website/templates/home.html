@@ -4,19 +4,24 @@
 {% block content %}
 
 <div class="container-fluid">
+   {% for movies_list in movies %}
    <div class="row">
-
+       {% for movie in movies_list %}
                   <div class="col">
                       <div class="col-4 py-3">
                          <div class="card" style="width: 18rem;">
                             <div class="card-body" style="width: 18rem;">
-                            <h5 class="card-title">{{title}}</h5>
+                            <h5 class="card-title">{{movie.title}}</h5>
                                  </div>
-                             <img src="{{poster}}">
+                             <img src="{{movie.poster}}">
+                             <button class="btn btn-primary">Wyświetl</button>
                          </div>
                       </div>
                     </div>
+        {% endfor %}
+
    </div>
+    {% endfor %}
 </div>
 
 
