@@ -13,6 +13,7 @@ class Movies:
                 current_list = []
                 res.append(current_list)
             title = movie['original_title']
+            overview = movie['overview']
             poster = 'https://image.tmdb.org/t/p/w400'+movie['poster_path']
-            current_list.append({"title" : title, "poster" : poster})
+            current_list.append({"title" : title, "poster" : poster, "overview" : overview})
         return res

@@ -14,12 +14,13 @@
                             <h5 class="card-title">{{movie.title}}</h5>
                                  </div>
                              <img src="{{movie.poster}}">
-                             <button class="btn btn-primary">Wyświetl</button>
+                                 <a href="/overview">
+                                    <button class="btn btn-primary" style="width: 18rem;">Details</button>
+                                 </a>
                          </div>
                       </div>
                     </div>
         {% endfor %}
-
    </div>
     {% endfor %}
 </div>
