@@ -17,8 +17,10 @@ def home():
 #         title = request.args.get['movie.title']
 #         return redirect(f"/overview/{title}")
 
-@app.route("/overview")
-def overview():
+
+@app.route("/overview/<int:id>")
+def overview(id):
+    print(id)
     # if request.method == "POST":
     #     selected = request.args.get('movie.title')
     #     print("selected:", selected)
