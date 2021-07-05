@@ -19,5 +19,4 @@ class Movies:
             overview = movie['overview']
             poster = 'https://image.tmdb.org/t/p/w400'+movie['poster_path']
             current_list.append({"id" : id, "title" : title, "poster" : poster, "overview" : overview})
-
         return res
