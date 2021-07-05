@@ -25,30 +25,18 @@
         </div>
     </div>
 </div>
-<!--{{actor_name}}-->
 
-
-    <div class="container-fluid">
-
-        <div class="row">
-            {%for a in range(cast_length)%}
-              <div class="col">
-                  <div class="col-4 py-3">
-                     <div class="card" style="width: 18rem;">
-                          <img src="{{res.actor_pic}}" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">{{res.actor_name}}</h5>
-                            <p class="card-text">Character: {{res.actor_role}}</p>
-                          </div>
-                     </div>
-                  </div>
-              </div>
-            {% endfor %}
-        </div>
-    </div>
-
-
-
+<div class="card-deck">
+    {%for a in range(cast_length)%}
+    <div class="card" style="min-width: 18rem;">
+          <img src="{{pic_list[a]}}" class="card-img-top" alt="...">
+          <div class="card-body">
+                <h5 class="card-title">{{name_list[a]}}</h5>
+                <p class="card-text">Character: {{role_list[a]}}</p>
+          </div>
+     </div>
+    {%endfor%}
+</div>
 
 </body>
 </html>
