@@ -2,27 +2,23 @@
 {% block title %}Country{% endblock %}
 
 {% block content %}
-
-{{ message }}
-
 <form method="POST">
+   {{ form.csrf_token }}
     <div class="form-group">
-    <label for="login">Username</label>
-    <input type="text" class="form-control" id="login" name="login" aria-describedby="login" placeholder="Enter username">
+    <label for="login">{{ form.login.label }}</label>
+    {{ form.login(class="form-control") }}
   </div>
   <div class="form-group">
-    <label for="email">Email address</label>
-    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
-    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    <label for="email">{{ form.email.label }}</label>
+    {{ form.email(class="form-control") }}
   </div>
   <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+    <label for="password1">{{ form.password1.label }}</label>
+    {{ form.password1(class="form-control") }}
   </div>
     <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" class="form-control" id="password2" name="password2" placeholder="Please enter your password again">
-
+    <label for="password2">{{ form.password2.label }}</label>
+      {{ form.password2(class="form-control") }}
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
