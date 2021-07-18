@@ -3,3 +3,4 @@ flask-SqlAlchemy
 flask-login
 flask-wtf
 requests
+email_validator
