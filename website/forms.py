@@ -1,6 +1,17 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, ValidationError, IntegerField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
+from .models import User
+from werkzeug.security import check_password_hash
+
+
+class CorrectLogin:
+    def __call__(self, form, field):
+        user = User.query.filter_by(login=form.login.data).first()
+        if not user:
+            raise ValidationError("Niepoprawny login")
+        if not check_password_hash(user.password, form.password.data):
+            raise ValidationError("Niepoprawne haslo")
 
 
 class LoginForm(FlaskForm):
@@ -30,6 +41,12 @@ class Password:
         if not self.passwordHasUpperLetter():
             raise ValidationError("Hasło powinno mieć przynamniej jedną dużą literkę")
 
+class EmailNotExists:
+    def __call__(self, form, field):
+        user = User.query.filter_by(email=field.data).first()
+        if user:
+            raise ValidationError("Użytkownik o podanym adresie email już istnieje!")
+
 
 class SignUpForm(FlaskForm):
     login = StringField("Login", [DataRequired(), Length(min=4, max=30)])
@@ -38,13 +55,3 @@ class SignUpForm(FlaskForm):
                                         EqualTo('password2', message='Passwords must match'),
                                         Password()])
     password2 = PasswordField("Password confirm", [DataRequired(), Length(min=8, max=30)])
-
-class Complaint(FlaskForm):
-    login = StringField(label=('Login'),
-                           validators=[DataRequired(),
-                                       Length(max=30)])
-    complaint = StringField(label= ('complaint'),
-                            validators=[DataRequired(),
-                                       Length(max=150)])
-    mark = IntegerField(label= ('complaint'),
-                            validators=[DataRequired()])

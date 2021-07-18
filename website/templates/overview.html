@@ -2,7 +2,8 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
     <div class="row">
         <div class="d-flex align-items-flex-start">
             <div class="col-4">
@@ -16,8 +17,25 @@
                     <div class="card" >
                         <div class="card-body">
                         <p class="card-text">
-                            {{link_overview.overview}}
+                            Overview: {{link_overview.overview}}
                         </p>
+                            <p class="card-text">
+                            Popularity: {{link_overview.popularity}}
+                        </p>
+                        </p>
+                            <p class="card-text">
+                            Release date: {{link_overview.release_date}}
+                        </p>
+                        <form method="POST">
+
+                            <button type="submit" class="btn btn-outline-danger" name="{{id}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                   <path d="M19.5 13.572l-7.5 7.428l-7.5 -7.428m0 0a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" fill="red"></path>
+                                </svg>
+                            </button>
+                        </form>
+
                         </div>
                      </div>
                 </div>
@@ -25,6 +43,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="card-deck">
     {%for a in range(cast_length)%}
