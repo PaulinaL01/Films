@@ -1,4 +1,5 @@
 flask
 flask-SqlAlchemy
 flask-login
+flask-wtf
 requests
