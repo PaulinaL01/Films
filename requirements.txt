@@ -1,3 +1,4 @@
 flask
+flask-SqlAlchemy
 flask-login
 requests
