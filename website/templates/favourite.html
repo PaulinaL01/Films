@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+   {% for a in fav_list %}
+   <div class="row">
+       {% for b in fav_posters %}
+                  <div class="col">
+                      <div class="col-4 py-3">
+                         <div class="card" style="width: 18rem;">
+                            <div class="card-body" style="width: 18rem;">
+                            <h5 class="card-title">{{a}}</h5>
+                                 </div>
+                             <img src="{{b}}">
+                         </div>
+                          <div
+                              {% for c in favs %}
+                                  <a href="/delete/{{c.name}}"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                       <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                                       <path d="M10 10l4 4m0 -4l-4 4"></path>
+                                    </svg>
+                              {% endfor %}
+                                  </a>
+                      </div>
+                      </div>
+                    </div>
+        {% endfor %}
+   </div>
+    {% endfor %}
+</div>
+
+
+<!--<div class="container-fluid">-->
+<!--    {% for c in favs %}-->
+<!--        <div class="card" style="width: 18rem;">-->
+<!--            <div class="card-body" style="width: 18rem;">-->
+<!--                <a href="/delete/{{c.name}}"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">-->
+<!--                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>-->
+<!--                   <rect x="4" y="4" width="16" height="16" rx="2"></rect>-->
+<!--                   <path d="M10 10l4 4m0 -4l-4 4"></path>-->
+<!--                    </svg>-->
+<!--                </a>-->
+<!--                    {% for a in fav_list %}-->
+<!--                        <h5 class="card-title">{{a}}</h5>-->
+<!--                    {% endfor %}-->
+<!--            <div>-->
+<!--            {% for b in fav_posters %}-->
+<!--            <img src="{{b}}">-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--    {% endfor %}-->
+<!--</div>-->
+
+
+
+{% endblock %}
