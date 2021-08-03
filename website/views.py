@@ -26,33 +26,9 @@ def overview(id):
     id = str(id)
     link_overview = 'https://api.themoviedb.org/3/movie/'+ id + "?api_key=d086e02925aea6ae99f8b04207381382"
     link_overview = requests.get(link_overview).json()
-
     pos='https://image.tmdb.org/t/p/w400'+link_overview['poster_path']
-    credits = 'https://api.themoviedb.org/3/movie/' + id + "/credits?api_key=d086e02925aea6ae99f8b04207381382"
-    all_credits = requests.get(credits).json()
-
-
-    full_cast = all_credits['cast']
-    cast_length = len(full_cast)
-    name_list = []
-    pic_list = []
-    role_list = []
-    id_list = []
-
-    for i,actor in enumerate(all_credits['cast']):
-        actor_name = actor['name']
-        actor_pic = 'https://image.tmdb.org/t/p/w400' + str(actor['profile_path'])
-        if actor['profile_path'] == None:
-            actor_pic = 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png'
-        actor_role = actor['character']
-        actor_id = actor['id']
-        name_list.append(actor_name)
-        pic_list.append(actor_pic)
-        role_list.append(actor_role)
-        id_list.append(actor_id)
 
     if request.method == "POST":
-
 
         favourite = Favourite(name=id, user_id=current_user.id)
         db.session.add(favourite)
@@ -60,8 +36,7 @@ def overview(id):
         print('added to favourite')
         flash("Dzieki za glos", category="success")
 
-
-    return render_template("overview.html", movies=movies.getPopular(), link_overview=link_overview, pos=pos, all_credits=all_credits, full_cast=full_cast, name_list=name_list, role_list=role_list, pic_list=pic_list, cast_length=cast_length, favs = current_user.favs)
+    return render_template("overview.html",actor=actor, movies=movies.getPopular(), link_overview=link_overview, pos=pos, favs = current_user.favs, cast=movies.getCast(id))
 
 
 @app.route("/signup", methods=['GET', 'POST'])
@@ -109,22 +84,25 @@ def login():
 @app.route("/favourite", methods=["GET", "POST"])
 def favourite():
 
-
     favs = current_user.favs
     fav_length = len(favs)
-    fav_list = []
+    fav_list = []#title
     fav_posters = []
+    fav_ids = []
 
     for c in favs:
         fav = 'https://api.themoviedb.org/3/movie/' + str(c.name) + "?api_key=d086e02925aea6ae99f8b04207381382"
         all_fav = requests.get(fav).json()
+        fav_id = str(c.name)
         fav_title = all_fav['original_title']
         fav_poster = 'https://image.tmdb.org/t/p/w400' + all_fav['poster_path']
         fav_list.append(fav_title)
         fav_posters.append(fav_poster)
+        fav_ids.append(fav_id)
 
 
-    return render_template("favourite.html", favs = favs,  fav_list=fav_list, fav_posters=fav_posters)
+
+    return render_template("favourite.html", favs = favs,  fav_list=fav_list, fav_posters=fav_posters,fav_length=fav_length,fav_ids=fav_ids)
 
 @login_required
 @app.route("/delete/<name>")
@@ -135,3 +113,18 @@ def delete_complaint(name):
         db.session.commit()
         print("favourite movie deleted")
     return redirect(url_for("favourite"))
+
+@login_required
+@app.route("/actor/<int:actor_id>", methods=["GET", "POST"])
+def actor(actor_id):
+    link_actor = 'https://api.themoviedb.org/3/person/'+str(actor_id)+'?api_key=d086e02925aea6ae99f8b04207381382&language=en-US'
+    link_actor = requests.get(link_actor).json()
+    biography_actor = link_actor['biography']
+    birthday_actor = link_actor['birthday']
+    deathday_actor = link_actor['deathday']
+    name_actor = link_actor['name']
+    place_of_birth_actor = link_actor['place_of_birth']
+    profile_path_actor ='https://image.tmdb.org/t/p/w400'+ str(link_actor['profile_path'])
+
+
+    return render_template('actor.html', link_actor=link_actor,biography_actor=biography_actor,birthday_actor=birthday_actor, deathday_actor=deathday_actor, name_actor=name_actor, place_of_birth_actor=place_of_birth_actor,profile_path_actor=profile_path_actor)

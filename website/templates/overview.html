@@ -46,13 +46,13 @@
 
 
 <div class="card-deck">
-    {%for a in range(cast_length)%}
+    {%for a in cast%}
     <div class="card" style="min-width: 13rem;">
-          <img src="{{pic_list[a]}}" class="card-img-top" alt="...">
+          <img src="{{a.pic}}" class="card-img-top" alt="...">
           <div class="card-body">
-                <h5 class="card-title">{{name_list[a]}}</h5>
-                <p class="card-text">Character: {{role_list[a]}}</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <h5 class="card-title">{{a.name}}</h5>
+                <p class="card-text">Character: {{a.role}}</p>
+                <a href="/actor/{{a.id}}" class="btn btn-primary">Actor details</a>
           </div>
      </div>
     {%endfor%}
