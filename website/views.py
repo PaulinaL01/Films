@@ -1,3 +1,5 @@
+import random
+
 import requests
 from flask import Flask, render_template, request, url_for, redirect, flash
 from flask_login import login_required, login_user, logout_user, current_user
@@ -5,6 +7,7 @@ from . import app, db, User, movies
 from werkzeug.security import generate_password_hash
 from .forms import LoginForm, SignUpForm
 from .models import Favourite
+
 
 
 @login_required
@@ -36,7 +39,7 @@ def overview(id):
         print('added to favourite')
         flash("Dzieki za glos", category="success")
 
-    return render_template("overview.html",actor=actor, movies=movies.getPopular(), link_overview=link_overview, pos=pos, favs = current_user.favs, cast=movies.getCast(id))
+    return render_template("overview.html", actor=actor, movies=movies.getPopular(), link_overview=link_overview, pos=pos, favs = current_user.favs, cast=movies.getCast(id))
 
 
 @app.route("/signup", methods=['GET', 'POST'])
@@ -83,26 +86,12 @@ def login():
 @login_required
 @app.route("/favourite", methods=["GET", "POST"])
 def favourite():
+    favourites = []
+    for fav in current_user.favs:
+        favourites.append(movies.getMovieDetails(fav.name))
 
-    favs = current_user.favs
-    fav_length = len(favs)
-    fav_list = []#title
-    fav_posters = []
-    fav_ids = []
+    return render_template("favourite.html", favourites=favourites)
 
-    for c in favs:
-        fav = 'https://api.themoviedb.org/3/movie/' + str(c.name) + "?api_key=d086e02925aea6ae99f8b04207381382"
-        all_fav = requests.get(fav).json()
-        fav_id = str(c.name)
-        fav_title = all_fav['original_title']
-        fav_poster = 'https://image.tmdb.org/t/p/w400' + all_fav['poster_path']
-        fav_list.append(fav_title)
-        fav_posters.append(fav_poster)
-        fav_ids.append(fav_id)
-
-
-
-    return render_template("favourite.html", favs = favs,  fav_list=fav_list, fav_posters=fav_posters,fav_length=fav_length,fav_ids=fav_ids)
 
 @login_required
 @app.route("/delete/<name>")
@@ -114,17 +103,46 @@ def delete_complaint(name):
         print("favourite movie deleted")
     return redirect(url_for("favourite"))
 
+
 @login_required
 @app.route("/actor/<int:actor_id>", methods=["GET", "POST"])
 def actor(actor_id):
-    link_actor = 'https://api.themoviedb.org/3/person/'+str(actor_id)+'?api_key=d086e02925aea6ae99f8b04207381382&language=en-US'
-    link_actor = requests.get(link_actor).json()
-    biography_actor = link_actor['biography']
-    birthday_actor = link_actor['birthday']
-    deathday_actor = link_actor['deathday']
-    name_actor = link_actor['name']
-    place_of_birth_actor = link_actor['place_of_birth']
-    profile_path_actor ='https://image.tmdb.org/t/p/w400'+ str(link_actor['profile_path'])
+    return render_template('actor.html',all_actors = movies.getActor(actor_id) )
 
 
-    return render_template('actor.html', link_actor=link_actor,biography_actor=biography_actor,birthday_actor=birthday_actor, deathday_actor=deathday_actor, name_actor=name_actor, place_of_birth_actor=place_of_birth_actor,profile_path_actor=profile_path_actor)
+@login_required
+@app.route("/random", methods=["GET", "POST"])
+def random_movie():
+    while True:
+        movie_random = random.randint(1,29949)
+        link_random =requests.get(
+        'https://api.themoviedb.org/3/movie/'+str(movie_random)+'?api_key=d086e02925aea6ae99f8b04207381382&language=en-US').json()
+
+        if 'success' in link_random:
+            continue
+
+        if 'id' in link_random and link_random['poster_path']!=None:
+            return redirect(f"overview/{movie_random}")
+
+        elif 'id' in link_random and link_random['poster_path'] == None:
+            random_poster = 'https://pixabay.com/get/g96776ca595ca4bced6d9bc99e584deb15ef40333e744a28c9932fbc52680ebd5a9a219fbd2cd0cece9c4674cea2a2072.svg'
+            random_title = link_random["original_title"]
+            random_overview = link_random["overview"]
+            random_vote = link_random['vote_average']
+            random_release = link_random['release_date']
+            for a in link_random['genres']:
+                random_genres = a['name']
+
+            return render_template('random.html', random_genres=random_genres, random_poster=random_poster, random_title=random_title, random_overview=random_overview, random_vote=random_vote, random_release=random_release, cast=movies.getCast(str(movie_random)), actor=actor)
+
+        # if request.method == "POST":
+        #     favourite = Favourite(name=movie_random, user_id=current_user.id)
+        #     db.session.add(favourite)
+        #     db.session.commit()
+        #     print('added to favourite')
+        #     flash("Dzieki za glos", category="success")
+        #
+        #     return render_template('random.html', favs = current_user.favs)
+
+
+

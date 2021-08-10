@@ -8,18 +8,21 @@
 
     <div class="container-fluid">
 
-    {% for a in range (fav_length) %}
+    {% for fav in favourites %}
        <div class="row">
 
               <div class="col">
                   <div class="col-4 py-3">
                      <div class="card" style="width: 18rem;">
                         <div class="card-body" style="width: 18rem;">
-                        <h5 class="card-title">{{fav_list[a]}}</h5>
+                        <h5 class="card-title">{{fav.title}}</h5>
                              </div>
-                         <img src="{{fav_posters[a]}}">
+                         <img src="{{fav.poster}}">
+                                <a href="/overview/{{fav.id}}">
+                                 <button class="btn btn-primary" style="width: 18rem;">Details</button>
+                                 </a>
 
-                        <a href="/delete/{{fav_ids[a]}}"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <a href="/delete/{{fav.id}}"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
                                <path d="M10 10l4 4m0 -4l-4 4"></path>
@@ -34,8 +37,6 @@
        </div>
     {% endfor %}
     </div>
-
-
 
 
 {% endblock %}

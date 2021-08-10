@@ -9,8 +9,6 @@ class MoviesAPI:
             f"https://api.themoviedb.org/3/movie/popular?api_key={API_KEY}&language=en-US&page=1").json()
 
 
-
-
     def getPopular(self):
         res = []
         for i, movie in enumerate(self.all_movies['results']):
@@ -26,6 +24,7 @@ class MoviesAPI:
             poster = 'https://image.tmdb.org/t/p/w400'+movie['poster_path']
             current_list.append({"id" : id, "title" : title, "poster" : poster, "overview" : overview, "popularity" : popularity, "vote_average" : vote_average})
         return res
+
 
     def getCast(self, id):
 
@@ -48,4 +47,24 @@ class MoviesAPI:
 
 
     def getMovieDetails(self, movie_id):
-        pass
+        fav = 'https://api.themoviedb.org/3/movie/' + str(movie_id) + "?api_key=d086e02925aea6ae99f8b04207381382"
+        all_fav = requests.get(fav).json()
+        fav_title = all_fav['original_title']
+        fav_poster = 'https://image.tmdb.org/t/p/w400' + all_fav['poster_path']
+        return {"id" : movie_id, "poster" : fav_poster, "title" : fav_title}
+
+
+    def getActor(self, actor_id):
+        link_actor = 'https://api.themoviedb.org/3/person/' + str(
+            actor_id) + '?api_key=d086e02925aea6ae99f8b04207381382&language=en-US'
+        link_actor = requests.get(link_actor).json()
+        detailes_actor = []
+        biography_actor = link_actor['biography']
+        birthday_actor = link_actor['birthday']
+        deathday_actor = link_actor['deathday']
+        name_actor = link_actor['name']
+        place_of_birth_actor = link_actor['place_of_birth']
+        profile_path_actor = 'https://image.tmdb.org/t/p/w400' + str(link_actor['profile_path'])
+        detailes_actor.append({'biography_actor' : biography_actor,'birthday_actor': birthday_actor,'deathday_actor': deathday_actor,'name_actor':name_actor,'place_of_birth_actor':place_of_birth_actor,'profile_path_actor': profile_path_actor})
+
+        return detailes_actor
