@@ -5,3 +5,5 @@ flask-wtf
 requests
 email_validator
 random
+selenium
+time

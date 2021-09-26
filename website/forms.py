@@ -55,3 +55,10 @@ class SignUpForm(FlaskForm):
                                         EqualTo('password2', message='Passwords must match'),
                                         Password()])
     password2 = PasswordField("Password confirm", [DataRequired(), Length(min=8, max=30)])
+
+class CommentForm(FlaskForm):
+    comment = StringField(label= ('comment'),
+                            validators=[DataRequired(), Length(max=150)])
+
+class Filter_Films(FlaskForm):
+    films_number = IntegerField("films_number", [DataRequired(), Length(min=1, max=1)])

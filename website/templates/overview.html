@@ -6,35 +6,63 @@
 <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
     <div class="row">
         <div class="d-flex align-items-flex-start">
-            <div class="col-4">
-                <div class="container">
-                <h5 class="title">{{link_overview.title}}</h5>
-                <img src="{{pos}}">
-                </div>
+            <div class="card">
+                 <div class="card-body">
+                        <h5 class="title">{{movie_overview.title}}</h5>
+                        <img src="{{movie_overview.pos}}" style="border: 5px solid black;border-radius: 10%">
+                 </div>
             </div>
-            <div class="col">
-                <div class="container">
-                    <div class="card" >
+
+            <div class="col" >
+                <div class="container-fluid">
+                    <div class="card">
                         <div class="card-body">
                         <p class="card-text">
-                            Overview: {{link_overview.overview}}
+                            Overview: {{movie_overview.overview}}
                         </p>
                             <p class="card-text">
-                            Popularity: {{link_overview.popularity}}
+                            Popularity: {{movie_overview.popularity}}
                         </p>
-                        </p>
-                            <p class="card-text">
-                            Release date: {{link_overview.release_date}}
-                        </p>
-                        <form method="POST">
 
-                            <button type="submit" class="btn btn-outline-danger" name="{{id}}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <p class="card-text">
+                            Release date: {{movie_overview.release_date}}
+                        </p>
+                        <a href="/like_movie/{{id}}">
+
+<!--                            <style>-->
+<!--                                    .btn{-->
+<!--                                        cursor:pointer;-->
+<!--                                        transition: .5s;-->
+<!--                                    }-->
+<!--                                    .btn:visited {-->
+<!--                                    background-color: red;-->
+<!--                                    }-->
+<!--                                    .btn:hover{-->
+<!--                                        background-color: gold;-->
+<!--                                        box-shadow: 0 0 5px gold;-->
+<!--                                    }-->
+<!--                            </style>-->
+
+                            {%if red_heart %}
+                            <button type="submit" id="heart1" class="btn" name="{{id}}">
+
+                                <svg id="heart1" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                   <path d="M19.5 13.572l-7.5 7.428l-7.5 -7.428m0 0a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" fill="none"></path>
+                                </svg>
+
+                            </button>
+                            {%else%}
+                            <button type="submit" id="heart2" class="btn" name="{{id}}">
+
+                                <svg id="heart1" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                    <path d="M19.5 13.572l-7.5 7.428l-7.5 -7.428m0 0a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" fill="red"></path>
                                 </svg>
+
                             </button>
-                        </form>
+                            {%endif%}
+                        </a>
 
                         </div>
                      </div>
@@ -44,19 +72,56 @@
     </div>
 </div>
 
-
 <div class="card-deck">
     {%for a in cast%}
-    <div class="card" style="min-width: 13rem;">
-          <img src="{{a.pic}}" class="card-img-top" alt="...">
-          <div class="card-body">
+    <div class="card" style="min-width: 13rem; max-width: 13rem;min-height: 20rem;">
+        <style>
+            div.card{
+                margin: 20px 10px 20px 10px;
+            }
+        </style>
+        <style>.img{
+                margin: 20px 10px 20px 10px;
+            }</style>
+          <img src="{{a.pic}}" class="card-img-top" alt="..." style="border: 5px;">
+
+          <div class="card-body" style="margin-bottom: 25px;">
                 <h5 class="card-title">{{a.name}}</h5>
                 <p class="card-text">Character: {{a.role}}</p>
-                <a href="/actor/{{a.id}}" class="btn btn-primary">Actor details</a>
+                <a href="/actor/{{a.id}}" class="btn btn-primary">Actor details </a>
           </div>
      </div>
     {%endfor%}
 </div>
+<style>
+    div.card-deck{
+        margin: 20px;
+    }
+</style>
+
+{{ message }}
+
+{% for c in comment_list %}
+
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+<!--    <h5 class="card-title"><label>{{c.user.login}}</label></h5>-->
+    <h6 class="card-subtitle mb-2 text-muted"><label>Date: {{c.date}}</label></h6>
+    <p class="card-text"><label>Content: {{c.comment}}</label></p>
+  </div>
+</div>
+{% endfor %}
+
+<form method="POST">
+    {{ form.csrf_token }}
+    <div class="form-group">
+        <label for="comment">Komentarz</label>
+        {{ form.comment(class="form-control") }}
+    </div>
+
+     <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
 
 
 </body>

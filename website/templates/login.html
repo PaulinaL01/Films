@@ -3,7 +3,8 @@
 
 {% block content %}
 
-<form method="POST">
+<div class="container">
+    <form method="POST">
     {{ form.csrf_token }}
     <div class="form-group">
         <label for="login">Username</label>
@@ -16,5 +17,7 @@
 
      <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+</div>
+
 
 {% endblock %}

@@ -1,53 +1,87 @@
 import random
+from functools import wraps
+from .dekoratory import liked_movie_required, not_log_in
 
 import requests
-from flask import Flask, render_template, request, url_for, redirect, flash
+from flask import Flask, render_template, request, url_for, redirect, flash, session
 from flask_login import login_required, login_user, logout_user, current_user
 from . import app, db, User, movies
 from werkzeug.security import generate_password_hash
-from .forms import LoginForm, SignUpForm
-from .models import Favourite
-
+from .forms import LoginForm, SignUpForm, CommentForm, Filter_Films
+from .models import Favourite, Comment
 
 
 @login_required
 @app.route("/logout")
 def logout():
     logout_user()
+    flash("Wylogowano!", category="success")
     return redirect(url_for("login"))
 
 
 @login_required
 @app.route("/")
 def home():
-    return render_template("home.html", movies=movies.getPopular())
+    form = Filter_Films()
+    if form.validate_on_submit():
+        pass
+        # films_number='films_number'
+    return render_template("home.html", movies=movies.getPopular(4), form=form)
 
 
+@app.route("/like_movie/<int:id>", methods=["GET"])
 @login_required
-@app.route("/overview/<int:id>", methods=["GET", "POST"])
-def overview(id):
-    id = str(id)
-    link_overview = 'https://api.themoviedb.org/3/movie/'+ id + "?api_key=d086e02925aea6ae99f8b04207381382"
-    link_overview = requests.get(link_overview).json()
-    pos='https://image.tmdb.org/t/p/w400'+link_overview['poster_path']
+def like_movie(id):
+    if Favourite.query.filter_by(name=id).first():
+        f = Favourite.query.filter_by(name=id)
+        f.delete()
+        db.session.commit()
+        flash("Nie lubisz")
+    else:
 
-    if request.method == "POST":
-
-        favourite = Favourite(name=id, user_id=current_user.id)
-        db.session.add(favourite)
+        fav = Favourite(name=id, user_id=current_user.id)
+        db.session.add(fav)
         db.session.commit()
         print('added to favourite')
         flash("Dzieki za glos", category="success")
+    return redirect(url_for(f"overview", id=id) )
 
-    return render_template("overview.html", actor=actor, movies=movies.getPopular(), link_overview=link_overview, pos=pos, favs = current_user.favs, cast=movies.getCast(id))
+
+@app.route("/overview/<int:id>", methods=["GET", "POST"])
+@login_required
+def overview(id):
+    if Favourite.query.filter_by(name=id).first():
+        red_heart = False
+    else:
+        red_heart = True
+    form = CommentForm()
+
+    if form.validate_on_submit():
+        comment = Comment(comment=form.comment.data, user_id=current_user.id, name=id)
+        db.session.add(comment)
+        db.session.commit()
+        flash("Fajny komentarz, masz stajla", category="success")
+
+    comment_list = []
+    for a in Comment.query.filter_by(name=id):
+        a.user = User.query.get(a.user_id)
+        comment_list.append(a)
+
+    return render_template("overview.html", actor=actor, movies=movies.getPopular(), favs=current_user.favs,
+                           cast=movies.getCast(id), movie_overview=movies.getOverview(id), current_user=current_user,
+                           form=form,
+                           comments=current_user.comments, comment_list=comment_list, id=id, red_heart=red_heart)
 
 
 @app.route("/signup", methods=['GET', 'POST'])
+
 def sign_up():
     form = SignUpForm()
     if form.validate_on_submit():
         if User.query.filter_by(login=form.login.data).first():
             flash("Podany uzytkownik juz istnieje", category="warning")
+        elif User.query.filter_by(email=form.email.data).first():
+            flash("Użytkownik o podanym adresie email już istnieje!", category="warning")
         else:
             flash("Utworzono uzytkownika", category="success")
             user = User(login=form.login.data, email=form.email.data,
@@ -71,9 +105,12 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():  # jesli formularz udalo sie poprawnie wypelnic
         user = User.query.filter_by(login=form.login.data).first()
-        login_user(user, remember=True)
-        flash("Zalogowano!", category="success")
-        return redirect(url_for("home"))
+        if not user:
+            flash("Nie znaleziono uzytkownika!", category="info")
+        else:
+            login_user(user, remember=True)
+            flash("Zalogowano!", category="success")
+            return redirect(url_for("home"))
     else:
         for error in form.login.errors:
             flash(error, category="warning")
@@ -85,6 +122,7 @@ def login():
 
 @login_required
 @app.route("/favourite", methods=["GET", "POST"])
+@liked_movie_required
 def favourite():
     favourites = []
     for fav in current_user.favs:
@@ -107,42 +145,21 @@ def delete_complaint(name):
 @login_required
 @app.route("/actor/<int:actor_id>", methods=["GET", "POST"])
 def actor(actor_id):
-    return render_template('actor.html',all_actors = movies.getActor(actor_id) )
+    return render_template('actor.html', all_actors=movies.getActor(actor_id))
 
 
 @login_required
 @app.route("/random", methods=["GET", "POST"])
 def random_movie():
-    while True:
-        movie_random = random.randint(1,29949)
-        link_random =requests.get(
-        'https://api.themoviedb.org/3/movie/'+str(movie_random)+'?api_key=d086e02925aea6ae99f8b04207381382&language=en-US').json()
+    random_id = random.randint(1, 29949)
+    while not movies.isMovieExists(random_id):
+        random_id = random.randint(1, 29949)
+    return redirect(f"overview/{random_id}")
 
-        if 'success' in link_random:
-            continue
 
-        if 'id' in link_random and link_random['poster_path']!=None:
-            return redirect(f"overview/{movie_random}")
-
-        elif 'id' in link_random and link_random['poster_path'] == None:
-            random_poster = 'https://pixabay.com/get/g96776ca595ca4bced6d9bc99e584deb15ef40333e744a28c9932fbc52680ebd5a9a219fbd2cd0cece9c4674cea2a2072.svg'
-            random_title = link_random["original_title"]
-            random_overview = link_random["overview"]
-            random_vote = link_random['vote_average']
-            random_release = link_random['release_date']
-            for a in link_random['genres']:
-                random_genres = a['name']
-
-            return render_template('random.html', random_genres=random_genres, random_poster=random_poster, random_title=random_title, random_overview=random_overview, random_vote=random_vote, random_release=random_release, cast=movies.getCast(str(movie_random)), actor=actor)
-
-        # if request.method == "POST":
-        #     favourite = Favourite(name=movie_random, user_id=current_user.id)
-        #     db.session.add(favourite)
-        #     db.session.commit()
-        #     print('added to favourite')
-        #     flash("Dzieki za glos", category="success")
-        #
-        #     return render_template('random.html', favs = current_user.favs)
-
+@app.route("/acceptcookies")
+def cookies():
+    session["cookies"] = True #zapisuje w sesji przegladarki pare "cookies" i True
+    return redirect(url_for("home"))
 
 

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from website.moviesapi import MoviesAPI
 from flask_login import LoginManager
-
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '1234'
@@ -13,14 +13,13 @@ db = SQLAlchemy()
 db.init_app(app)
 movies = MoviesAPI()
 
-if not os.path.exists(DB_NAME): #jesli plik nie ostnieje
-    from .models import User
-    db.create_all(app=app)
-    print("DB created!")
 
 loginManager = LoginManager() #zeby umozliwic logowanie wielu uzytkownikow potrzebujemy loginmanagera
 loginManager.login_view = "login" #wskazujemy gdzie ma przekierowac uzytkownika niezalogowanego (musi byc podana nazwa funkcji)
 loginManager.init_app(app)
+
+from .models import User, Comment, Favourite, UserMixin
+migration = Migrate(app=app, db=db)
 
 from .views import *
 

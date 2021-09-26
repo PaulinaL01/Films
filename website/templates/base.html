@@ -2,7 +2,7 @@
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="website/style.css" />
   <title>{% block title %}{% endblock %} - My Webpage</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -26,13 +26,40 @@
       {% else %}
       <a class="nav-item nav-link" href="/login">Log in</a>
       <a class="nav-item nav-link" href="/signup">Sign up</a>
-      <a class="nav-item nav-link" href="/random">Random Film</a>
+
 
       {% endif %}
     </div>
   </div>
 </nav>
-  <div id="content">
-    {% block content %}{% endblock %}
-  </div>
+  <div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'message' %}
+              <div class="alert alert-warning" role="alert" name="alert">
+            {% else %}
+              <div class="alert alert-{{ category }}" role="alert" name="alert">
+            {% endif %}
+              {{ message }}
+            </div>
+            </div>
+        {% endfor %}
+      {% endif %}
+  {% endwith %}
+</div>
+
+<div id="content">
+  {% block content %}{% endblock %}
+</div>
+{% if "cookies" not in session or not session.cookies %}
+<div>
+  Naciśnij <a href="/acceptcookies">tutaj</a> jeśli akceptujesz cookies.
+</div>
+  {% endif %}
+
+
+
+
+
 </body>

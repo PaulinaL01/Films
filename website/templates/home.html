@@ -2,28 +2,51 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<div class="container">
+    <form method="POST">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label for="films_number">Ile filmów wyświetlić</label>
+            {{ form.films_number(class="form-control") }}
+        </div>
+
+         <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 
 <div class="container-fluid">
+
+
    {% for movies_list in movies %}
    <div class="row">
        {% for movie in movies_list %}
                   <div class="col">
                       <div class="col-4 py-3">
-                         <div class="card" style="width: 18rem;">
+                         <div class="card" style="width: 18rem;" name="card">
                             <div class="card-body" style="width: 18rem;">
                             <h5 class="card-title">{{movie.title}}</h5>
                                  </div>
                              <img src="{{movie.poster}}">
+                              {% if current_user.is_authenticated %}
                                  <a href="/overview/{{movie.id}}">
                                     <button class="btn btn-primary" style="width: 18rem;">Details</button>
                                  </a>
+                             {% else %}
+                                 <a href="/login">
+                                    <button class="btn btn-primary" style="width: 18rem;">Details</button>
+                                 </a>
+                             {% endif %}
                          </div>
                       </div>
                     </div>
-        {% endfor %}
+       {% endfor %}
    </div>
     {% endfor %}
 </div>
+
+<footer id="footer">
+  <p>Author: P&M</p>
+</footer>
 
 
 </body>
