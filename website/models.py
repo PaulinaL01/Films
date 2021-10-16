@@ -11,6 +11,9 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(100))
     favs = db.relationship("Favourite")
     comments = db.relationship("Comment")
+    admin = db.Column(db.Boolean, default=False)
+    is_github_account = db.Column(db.Boolean, default=False)
+
 
 
 class Favourite(db.Model):

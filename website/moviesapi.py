@@ -9,10 +9,10 @@ class MoviesAPI:
         self.all_movies = requests.get(
             f"https://api.themoviedb.org/3/movie/popular?api_key={API_KEY}&language=en-US&page=1").json()
 
-    def getPopular(self, count=8):
+    def getPopular(self, selected=8):
         self.res = []
 
-        for i, movie in enumerate(self.all_movies['results'][:count]):
+        for i, movie in enumerate(self.all_movies['results'][:selected]):
             if i % 4 == 0:
                 current_list = []
                 self.res.append(current_list)

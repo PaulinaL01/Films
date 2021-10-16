@@ -2,17 +2,35 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="container">
-    <form method="POST">
-        {{ form.csrf_token }}
-        <div class="form-group">
-            <label for="films_number">Ile filmów wyświetlić</label>
-            {{ form.films_number(class="form-control") }}
-        </div>
 
-         <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
+
+<!--<div class="dropdown">-->
+<!--  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--    Ile filmów wyświetlić-->
+<!--  </button>-->
+<!--  <div class="dropdown-menu" name="selected" id="selected" aria-labelledby="dropdownMenuButton">-->
+<!--    <a class="dropdown-item" href="#">4</a>-->
+<!--    <a class="dropdown-item" href="#">8</a>-->
+<!--    <a class="dropdown-item" href="#">12</a>-->
+<!--      <a class="dropdown-item" href="#">16</a>-->
+<!--  </div>-->
+<!--</div>-->
+
+ <form method="POST">
+      <div align="center" id="form-group">
+        <select class="form-control" size="5" multiple name="selected" id="selected" action="/">
+            {% for selected in selected_list %}
+
+                <option value="{{selected}}" >{{selected}}</option>"
+
+            {% endfor %}
+        </select>
+
+
+
+    </div>
+    <button type="submit" class="btn btn-outline-primary" name="submit" value="submit">Submit</button>
+</form>
 
 <div class="container-fluid">
 

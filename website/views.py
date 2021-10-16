@@ -1,6 +1,7 @@
 import random
 from functools import wraps
 from .dekoratory import liked_movie_required, not_log_in
+from flask_dance.contrib.github import github
 
 import requests
 from flask import Flask, render_template, request, url_for, redirect, flash, session
@@ -20,14 +21,18 @@ def logout():
 
 
 @login_required
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def home():
     form = Filter_Films()
+    selected = 8
+    selected_list = [4,8,12,16]
     if form.validate_on_submit():
-        pass
+        selected = request.form.get('selected',None)
+        print("selected:", selected)
         # films_number='films_number'
-    return render_template("home.html", movies=movies.getPopular(4), form=form)
-
+        return render_template("home.html", movies=movies.getPopular(selected),selected=selected, form=form, current_user=current_user, selected_list=selected_list)
+    return render_template("home.html", movies=movies.getPopular(selected), selected=selected, form=form,
+                           current_user=current_user, selected_list=selected_list)
 
 @app.route("/like_movie/<int:id>", methods=["GET"])
 @login_required
@@ -162,4 +167,26 @@ def cookies():
     session["cookies"] = True #zapisuje w sesji przegladarki pare "cookies" i True
     return redirect(url_for("home"))
 
+@app.route("/github_login")
+def github_login():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    else:
+        resp = github.get("/user")
+        print(resp)
+        print(resp.json())
+        name = resp.json()["login"]
+        email = resp.json()["email"]
+        user = User.query.filter_by(login=name).first()
+        if not user:
+            user = User(login=name, email=email, password=generate_password_hash("1234567"), is_github_account=True)
+            db.session.add(user)
+            db.session.commit()
+            user = User.query.filter_by(login=name).first()
+        login_user(user)
 
+        if not user.is_github_account:
+            flash("Konto po podanej nazwie juz istnieje i nie jest powiazane z github-em", category="warning")
+            return redirect(url_for("login"))
+
+        return redirect(url_for("home"))
