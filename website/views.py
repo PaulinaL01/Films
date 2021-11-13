@@ -2,13 +2,14 @@ import random
 from functools import wraps
 from .dekoratory import liked_movie_required, not_log_in
 from flask_dance.contrib.github import github
-
+from flask_avatars import Avatars
+from numpy._distributor_init import basedir
 import requests
-from flask import Flask, render_template, request, url_for, redirect, flash, session
+from flask import Flask, render_template, request, url_for, redirect, flash, session, send_from_directory
 from flask_login import login_required, login_user, logout_user, current_user
-from . import app, db, User, movies
+from . import app, db, User, movies, avatars
 from werkzeug.security import generate_password_hash
-from .forms import LoginForm, SignUpForm, CommentForm, Filter_Films
+from .forms import LoginForm, SignUpForm, CommentForm, FilterFilms
 from .models import Favourite, Comment
 
 
@@ -23,16 +24,15 @@ def logout():
 @login_required
 @app.route("/", methods=["GET", "POST"])
 def home():
-    form = Filter_Films()
+    form = FilterFilms()
     selected = 8
-    selected_list = [4,8,12,16]
+    selected_list = [4, 8, 12, 16]
     if form.validate_on_submit():
-        selected = request.form.get('selected',None)
-        print("selected:", selected)
-        # films_number='films_number'
-        return render_template("home.html", movies=movies.getPopular(selected),selected=selected, form=form, current_user=current_user, selected_list=selected_list)
+        selected = form.films_number.data
+
     return render_template("home.html", movies=movies.getPopular(selected), selected=selected, form=form,
                            current_user=current_user, selected_list=selected_list)
+
 
 @app.route("/like_movie/<int:id>", methods=["GET"])
 @login_required
@@ -190,3 +190,31 @@ def github_login():
             return redirect(url_for("login"))
 
         return redirect(url_for("home"))
+
+@app.route('/avatars/<path:filename>')
+def get_avatar(filename):
+    return send_from_directory(app.config['AVATARS_SAVE_PATH'], filename)
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        f = request.files.get('file')
+        raw_filename = avatars.save_avatar(f)
+        session['raw_filename'] = raw_filename  # you will need to store this filename in database in reality
+        return redirect(url_for('crop'))
+    return render_template('upload.html')
+
+@app.route('/crop', methods=['GET', 'POST'])
+def crop():
+    if request.method == 'POST':
+        x = request.form.get('x')
+        y = request.form.get('y')
+        w = request.form.get('w')
+        h = request.form.get('h')
+        filenames = avatars.crop_avatar(session['raw_filename'], x, y, w, h)
+        url_s = url_for('get_avatar', filename=filenames[0])
+        url_m = url_for('get_avatar', filename=filenames[1])
+        url_l = url_for('get_avatar', filename=filenames[2])
+        return render_template('done.html', url_s=url_s, url_m=url_m, url_l=url_l)
+    return render_template('crop.html')

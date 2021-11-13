@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, ValidationError, IntegerField
+from wtforms import StringField, PasswordField, ValidationError, IntegerField, SubmitField, HiddenField, SelectField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 from .models import User
 from werkzeug.security import check_password_hash
-
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 class CorrectLogin:
     def __call__(self, form, field):
@@ -56,9 +56,27 @@ class SignUpForm(FlaskForm):
                                         Password()])
     password2 = PasswordField("Password confirm", [DataRequired(), Length(min=8, max=30)])
 
+
 class CommentForm(FlaskForm):
     comment = StringField(label= ('comment'),
                             validators=[DataRequired(), Length(max=150)])
 
-class Filter_Films(FlaskForm):
-    films_number = IntegerField("films_number", [DataRequired(), Length(min=1, max=1)])
+
+class FilterFilms(FlaskForm):
+    films_number = SelectField("films_number", [DataRequired()], coerce=int, choices=[(1, "jeden"), (4, "cztery"), (8, "osiem"), (16, "szesnaście")])
+
+
+class UploadAvatarForm(FlaskForm):
+    image = FileField('Upload (<=3M)', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png'], 'The file format should be .jpg or .png.')
+    ])
+    submit = SubmitField()
+
+
+class CropAvatarForm(FlaskForm):
+    x = HiddenField()
+    y = HiddenField()
+    w = HiddenField()
+    h = HiddenField()
+    submit = SubmitField('Crop')

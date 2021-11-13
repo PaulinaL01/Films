@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
+from numpy._distributor_init import basedir
 from website.moviesapi import MoviesAPI
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -11,6 +12,7 @@ from flask_avatars import Avatars
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
 avatars = Avatars(app)
+app.config['AVATARS_SAVE_PATH'] = os.path.join(basedir, 'avatars')
 app.config['SECRET_KEY'] = '1234'
 DB_NAME = "database.db"
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}" #sciekza do bazy

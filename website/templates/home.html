@@ -17,14 +17,16 @@
 <!--</div>-->
 
  <form method="POST">
+      {{ form.csrf_token }}
       <div align="center" id="form-group">
-        <select class="form-control" size="5" multiple name="selected" id="selected" action="/">
-            {% for selected in selected_list %}
+<!--        <select class="form-control" size="5" name="selected" id="selected" action="/">-->
+            {{ form.films_number(class="form-check-input") }}
+<!--            {% for selected in selected_list %}-->
 
-                <option value="{{selected}}" >{{selected}}</option>"
+<!--                <option value="{{selected}}" >{{selected}}</option>"-->
 
-            {% endfor %}
-        </select>
+<!--            {% endfor %}-->
+<!--        </select>-->
 
 
 
