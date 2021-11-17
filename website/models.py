@@ -13,6 +13,8 @@ class User(db.Model, UserMixin):
     comments = db.relationship("Comment")
     admin = db.Column(db.Boolean, default=False)
     is_github_account = db.Column(db.Boolean, default=False)
+    confirmed_email = db.Column(db.Boolean, default=False)
+    confirm_code = db.Column(db.String(65))
 
 
 

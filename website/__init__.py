@@ -8,9 +8,12 @@ from flask_migrate import Migrate
 from flask_dance.contrib.github import make_github_blueprint, github
 import os
 from flask_avatars import Avatars
+from flask_mail import Mail
+import toml
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
+app.config.from_file("config.toml", load=toml.load)
 avatars = Avatars(app)
 app.config['AVATARS_SAVE_PATH'] = os.path.join(basedir, 'avatars')
 app.config['SECRET_KEY'] = '1234'
@@ -33,6 +36,8 @@ loginManager.init_app(app)
 from .models import User, Comment, Favourite, UserMixin
 migration = Migrate(app=app, db=db)
 
+mail = Mail(app=app)
+
 from .views import *
 
 
@@ -41,11 +46,13 @@ def load_user(id):
     from .models import User
     return User.query.get(int(id))
 
-with app.app_context():
-    if not User.query.filter_by(login="admin").first():
-        user = User(login="admin", password=generate_password_hash("A1234567"), admin=True)
-        db.session.add(user)
-        db.session.commit()
+try:
+    with app.app_context():
+        if not User.query.filter_by(login="admin").first():
+            user = User(login="admin", password=generate_password_hash("A1234567"), admin=True)
+            db.session.add(user)
+            db.session.commit()
 
-
+except:
+    print("Cant create SU")
 

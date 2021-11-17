@@ -5,13 +5,14 @@ from flask_dance.contrib.github import github
 from flask_avatars import Avatars
 from numpy._distributor_init import basedir
 import requests
-from flask import Flask, render_template, request, url_for, redirect, flash, session, send_from_directory
+from flask import Flask, render_template, request, url_for, redirect, flash, session, send_from_directory,render_template_string,jsonify
 from flask_login import login_required, login_user, logout_user, current_user
-from . import app, db, User, movies, avatars
+from . import app, db, User, movies, avatars,mail
 from werkzeug.security import generate_password_hash
 from .forms import LoginForm, SignUpForm, CommentForm, FilterFilms
 from .models import Favourite, Comment
-
+from flask_mail import Message
+from .utils import create_code
 
 @login_required
 @app.route("/logout")
@@ -90,9 +91,16 @@ def sign_up():
         else:
             flash("Utworzono uzytkownika", category="success")
             user = User(login=form.login.data, email=form.email.data,
-                        password=generate_password_hash(form.password1.data))
+                        password=generate_password_hash(form.password1.data),
+                        confirm_code=create_code(64))
             db.session.add(user)
             db.session.commit()
+            msg = Message("Email confirmation", sender=("Flask Project", "flaskproject2@gmail.com"),
+                          recipients=[user.email])
+            with open("website/templates/email_confirmation.html", "r", encoding="utf-8") as f:
+                msg.html = render_template_string(f.read(), code=user.confirm_code)
+                mail.send(msg)
+            flash("Account created! Confirm email adress", category="success")
             return redirect(url_for("login"))
     else:
         for error in form.login.errors:
@@ -112,6 +120,8 @@ def login():
         user = User.query.filter_by(login=form.login.data).first()
         if not user:
             flash("Nie znaleziono uzytkownika!", category="info")
+        elif not user.confirmed_email:
+            flash("Nie potwierdzono adresu email", category="danger")
         else:
             login_user(user, remember=True)
             flash("Zalogowano!", category="success")
@@ -179,7 +189,10 @@ def github_login():
         email = resp.json()["email"]
         user = User.query.filter_by(login=name).first()
         if not user:
-            user = User(login=name, email=email, password=generate_password_hash("1234567"), is_github_account=True)
+            user = User(login=name, email=email,
+                        password=generate_password_hash("1234567"),
+                        is_github_account=True,
+                        confirmed_email=True)
             db.session.add(user)
             db.session.commit()
             user = User.query.filter_by(login=name).first()
@@ -218,3 +231,14 @@ def crop():
         url_l = url_for('get_avatar', filename=filenames[2])
         return render_template('done.html', url_s=url_s, url_m=url_m, url_l=url_l)
     return render_template('crop.html')
+
+@app.route("/register/<code>")
+def confirm_email(code):
+    user = User.query.filter_by(confirm_code=code).first()
+    if not user:
+        return "Bad request", 400
+    user.confirmed_email = True
+    user.confirm_code = None
+    db.session.commit()
+    flash("Email confirmed", category="success")
+    return redirect(url_for("login"))
