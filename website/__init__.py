@@ -6,7 +6,6 @@ from website.moviesapi import MoviesAPI
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_dance.contrib.github import make_github_blueprint, github
-import os
 from flask_avatars import Avatars
 from flask_mail import Mail
 import toml
