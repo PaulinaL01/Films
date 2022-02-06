@@ -14,6 +14,7 @@ from .models import Favourite, Comment
 from flask_mail import Message
 from .utils import create_code
 
+
 @login_required
 @app.route("/logout")
 def logout():
@@ -31,8 +32,13 @@ def home():
     if form.validate_on_submit():
         selected = form.films_number.data
 
-    return render_template("home.html", movies=movies.getPopular(selected), selected=selected, form=form,
-                           current_user=current_user, selected_list=selected_list)
+    return render_template("home.html", movies=movies.getPopular(selected), selected=selected, form=form, selected_list=selected_list)
+
+
+@login_required
+@app.route("/api/popular/<int:count>", methods=["GET", "POST"])
+def popular_movies(count):
+    return render_template("popular.html", movies=movies.getPopular(count))
 
 
 @app.route("/like_movie/<int:id>", methods=["GET"])
