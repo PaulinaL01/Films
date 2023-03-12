@@ -3,7 +3,6 @@ from flask_login import UserMixin
 from sqlalchemy import func
 
 
-
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(100))
@@ -15,7 +14,6 @@ class User(db.Model, UserMixin):
     is_github_account = db.Column(db.Boolean, default=False)
     confirmed_email = db.Column(db.Boolean, default=False)
     confirm_code = db.Column(db.String(65))
-
 
 
 class Favourite(db.Model):
@@ -30,6 +28,3 @@ class Comment(db.Model):
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     name = db.Column(db.Integer)
-
-#SELECT comment, date FROM Comment where movie_id == 15;
-#Comment.query.filter_by(movie_id=15)

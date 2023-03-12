@@ -46,7 +46,6 @@ class MoviesAPI:
         return {'link_overview' : link_overview, 'pos' : pos, 'title' : title, 'overview' : overview, 'popularity' : popularity, 'release_date' : release_date}
 
 
-
     def getCast(self, id):
 
         all_credits = requests.get('https://api.themoviedb.org/3/movie/' +
@@ -92,7 +91,3 @@ class MoviesAPI:
         movie_url = 'https://api.themoviedb.org/3/movie/' + str(movie_id) + f"?api_key={API_KEY}"
         movie = requests.get(movie_url).json()
         return "success" not in movie
-
-
-
-

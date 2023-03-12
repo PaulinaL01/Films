@@ -1,8 +1,6 @@
-import requests
-from flask import redirect, url_for, flash, request
+from flask import redirect, url_for, flash
 from flask_login import current_user
 from functools import wraps
-from .models import Favourite
 
 
 def liked_movie_required(func):

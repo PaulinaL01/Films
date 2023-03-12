@@ -10,13 +10,6 @@ class SignUpPage:
         self.password2_input = self.driver.find_element_by_name("password2")
         self.button = self.driver.find_element_by_xpath("//*[@id=\"content\"]/form/button")
 
-    # def go_to_signup(self, link):
-    #     self.link
-    #     return self
-
-    # def wylosuj_login(self, size):
-    #     return "".join([random.choice(ascii_lowercase) for i in range(size)])
-
     def enter_login(self, login):
         self.login_input.send_keys(login)
         return self
@@ -43,6 +36,7 @@ class SignUpPage:
     def get_alerts(self):
         alerts = self.driver.find_elements_by_name("alert")
         return [alert.text for alert in alerts]
+
 
 class LoginPage:
     def __init__(self, driver):
@@ -103,6 +97,8 @@ class RandomPage:
     def find_heart(self, heart):
         self.assertIsNotNone(heart)
         return self
+
+
 class Comment:
     def __init__(self, driver):
         self.driver = driver

@@ -1,10 +1,6 @@
 import random
-from functools import wraps
-from .dekoratory import liked_movie_required, not_log_in
+from .dekoratory import liked_movie_required
 from flask_dance.contrib.github import github
-from flask_avatars import Avatars
-from numpy._distributor_init import basedir
-import requests
 from flask import Flask, render_template, request, url_for, redirect, flash, session, send_from_directory,render_template_string,jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from . import app, db, User, movies, avatars,mail
@@ -86,7 +82,6 @@ def overview(id):
 
 
 @app.route("/signup", methods=['GET', 'POST'])
-
 def sign_up():
     form = SignUpForm()
     if form.validate_on_submit():
@@ -180,8 +175,9 @@ def random_movie():
 
 @app.route("/acceptcookies")
 def cookies():
-    session["cookies"] = True #zapisuje w sesji przegladarki pare "cookies" i True
+    session["cookies"] = True
     return redirect(url_for("home"))
+
 
 @app.route("/github_login")
 def github_login():
@@ -210,6 +206,7 @@ def github_login():
 
         return redirect(url_for("home"))
 
+
 @app.route('/avatars/<path:filename>')
 def get_avatar(filename):
     return send_from_directory(app.config['AVATARS_SAVE_PATH'], filename)
@@ -220,9 +217,10 @@ def upload():
     if request.method == 'POST':
         f = request.files.get('file')
         raw_filename = avatars.save_avatar(f)
-        session['raw_filename'] = raw_filename  # you will need to store this filename in database in reality
+        session['raw_filename'] = raw_filename
         return redirect(url_for('crop'))
     return render_template('upload.html')
+
 
 @app.route('/crop', methods=['GET', 'POST'])
 def crop():
@@ -237,6 +235,7 @@ def crop():
         url_l = url_for('get_avatar', filename=filenames[2])
         return render_template('done.html', url_s=url_s, url_m=url_m, url_l=url_l)
     return render_template('crop.html')
+
 
 @app.route("/register/<code>")
 def confirm_email(code):

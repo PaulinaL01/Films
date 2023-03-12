@@ -5,7 +5,7 @@ from numpy._distributor_init import basedir
 from website.moviesapi import MoviesAPI
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_dance.contrib.github import make_github_blueprint, github
+from flask_dance.contrib.github import make_github_blueprint
 from flask_avatars import Avatars
 from flask_mail import Mail
 import toml
@@ -17,7 +17,7 @@ avatars = Avatars(app)
 app.config['AVATARS_SAVE_PATH'] = os.path.join(basedir, 'avatars')
 app.config['SECRET_KEY'] = '1234'
 DB_NAME = "database.db"
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}" #sciekza do bazy
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
 db = SQLAlchemy()
 db.init_app(app)
 movies = MoviesAPI()
@@ -28,8 +28,8 @@ blueprint = make_github_blueprint(
 )
 app.register_blueprint(blueprint, url_prefix="/github_login")
 
-loginManager = LoginManager() #zeby umozliwic logowanie wielu uzytkownikow potrzebujemy loginmanagera
-loginManager.login_view = "login" #wskazujemy gdzie ma przekierowac uzytkownika niezalogowanego (musi byc podana nazwa funkcji)
+loginManager = LoginManager()
+loginManager.login_view = "login"
 loginManager.init_app(app)
 
 from .models import User, Comment, Favourite, UserMixin

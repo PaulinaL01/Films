@@ -5,6 +5,7 @@ from .models import User
 from werkzeug.security import check_password_hash
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
+
 class CorrectLogin:
     def __call__(self, form, field):
         user = User.query.filter_by(login=form.login.data).first()
@@ -40,6 +41,7 @@ class Password:
             raise ValidationError("Hasło powinno mieć przynajmniej jedną cyfrę")
         if not self.passwordHasUpperLetter():
             raise ValidationError("Hasło powinno mieć przynamniej jedną dużą literkę")
+
 
 class EmailNotExists:
     def __call__(self, form, field):

@@ -4,64 +4,8 @@
 {% block content %}
 
 
-<!--<div class="dropdown">-->
-<!--  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--    Ile filmów wyświetlić-->
-<!--  </button>-->
-<!--  <div class="dropdown-menu" name="selected" id="selected" aria-labelledby="dropdownMenuButton">-->
-<!--    <a class="dropdown-item" href="#">4</a>-->
-<!--    <a class="dropdown-item" href="#">8</a>-->
-<!--    <a class="dropdown-item" href="#">12</a>-->
-<!--      <a class="dropdown-item" href="#">16</a>-->
-<!--  </div>-->
-<!--</div>-->
-
- <form method="POST">
-      {{ form.csrf_token }}
-      <div align="center" id="form-group">
-<!--        <select class="form-control" size="5" name="selected" id="selected" action="/">-->
-            {{ form.films_number(class="form-check-input") }}
-<!--            {% for selected in selected_list %}-->
-
-<!--                <option value="{{selected}}" >{{selected}}</option>"-->
-
-<!--            {% endfor %}-->
-<!--        </select>-->
-
-
-
-    </div>
-    <button type="submit" class="btn btn-outline-primary" name="submit" value="submit">Submit</button>
-</form>
-
 <div class="container-fluid" id="movies">
 
-
-<!--   {% for movies_list in movies %}-->
-<!--   <div class="row">-->
-<!--       {% for movie in movies_list %}-->
-<!--                  <div class="col">-->
-<!--                      <div class="col-4 py-3">-->
-<!--                         <div class="card" style="width: 18rem;" name="card">-->
-<!--                            <div class="card-body" style="width: 18rem;">-->
-<!--                            <h5 class="card-title">{{movie.title}}</h5>-->
-<!--                                 </div>-->
-<!--                             <img src="{{movie.poster}}">-->
-<!--                              {% if current_user.is_authenticated %}-->
-<!--                                 <a href="/overview/{{movie.id}}">-->
-<!--                                    <button class="btn btn-primary" style="width: 18rem;">Details</button>-->
-<!--                                 </a>-->
-<!--                             {% else %}-->
-<!--                                 <a href="/login">-->
-<!--                                    <button class="btn btn-primary" style="width: 18rem;">Details</button>-->
-<!--                                 </a>-->
-<!--                             {% endif %}-->
-<!--                         </div>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--       {% endfor %}-->
-<!--   </div>-->
-<!--    {% endfor %}-->
 </div>
 
 <footer id="footer">

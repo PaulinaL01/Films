@@ -4,45 +4,48 @@
 {% block content %}
 
 
-
 <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
     <div class="row">
         <div class="d-flex align-items-flex-start">
             <div class="col-4">
                 <div class="container">
-                <h5 class="title" name="soup">{{random_title}}</h5>
-                <img src="{{random_poster}}">
+                    <h5 class="title" name="soup">{{random_title}}</h5>
+                    <img src="{{random_poster}}">
 
                 </div>
             </div>
             <div class="col">
                 <div class="container">
-                    <div class="card" >
+                    <div class="card">
                         <div class="card-body">
-                        <p class="card-text">
-                            Overview : {{random_overview}}
-                        </p>
                             <p class="card-text">
-                            Vote Average : {{random_vote}}
-                        </p>
-                        </p>
+                                Overview : {{random_overview}}
+                            </p>
                             <p class="card-text">
-                            Release date : {{random_release}}
-                        </p>
-                             <p class="card-text">
-                            Genre : {{random_genres}}
-                        </p>
-                        <form method="POST">
+                                Vote Average : {{random_vote}}
+                            </p>
+                            </p>
+                            <p class="card-text">
+                                Release date : {{random_release}}
+                            </p>
+                            <p class="card-text">
+                                Genre : {{random_genres}}
+                            </p>
+                            <form method="POST">
 
-                            <button type="submit" class="btn btn-outline-danger" name="{{movie_random}}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                   <path d="M19.5 13.572l-7.5 7.428l-7.5 -7.428m0 0a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" fill="red"></path>
-                                </svg>
-                            </button>
-                        </form>
+                                <button type="submit" class="btn btn-outline-danger" name="{{movie_random}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart"
+                                         width="24" height="24" viewBox="0 0 24 24" stroke-width="1"
+                                         stroke="currentColor" fill="none" stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M19.5 13.572l-7.5 7.428l-7.5 -7.428m0 0a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"
+                                              fill="red"></path>
+                                    </svg>
+                                </button>
+                            </form>
                         </div>
-                     </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,23 +53,18 @@
 </div>
 
 
-
 <div class="card-deck">
     {%for a in cast%}
     <div class="card" style="min-width: 13rem; max-width: 13rem;">
-          <img src="{{a.pic}}" class="card-img-top" alt="...">
-          <div class="card-body">
-                <h5 class="card-title">{{a.name}}</h5>
-                <p class="card-text">Character: {{a.role}}</p>
-                <a href="/actor/{{a.id}}" class="btn btn-primary">Actor details</a>
-          </div>
-     </div>
+        <img src="{{a.pic}}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{a.name}}</h5>
+            <p class="card-text">Character: {{a.role}}</p>
+            <a href="/actor/{{a.id}}" class="btn btn-primary">Actor details</a>
+        </div>
+    </div>
     {%endfor%}
 </div>
-
-
-
-
 
 
 {% endblock %}
