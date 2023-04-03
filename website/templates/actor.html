@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+
+    <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+
+        <div class="row">
+            {%for c in all_actors%}
+            <div class="d-flex align-items-flex-start">
+                <div class="col-4">
+                    <div class="container">
+                    <h5 class="title">{{c.name_actor}}</h5>
+                    <img src="{{c.profile_path_actor}}">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="container">
+                        <div class="card" >
+                            <div class="card-body">
+                            <p class="card-text">
+                                Biography: {{c.biography_actor}}
+
+                            </p>
+                                <p class="card-text">
+                                Place of birth : {{c.place_of_birth_actor}}<br/>
+                                Birthday : {{c.birthday_actor}} Death : {{c.deathday_actor}}
+                            </p>
+
+                            </div>
+                         </div>
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+{% endblock %}
